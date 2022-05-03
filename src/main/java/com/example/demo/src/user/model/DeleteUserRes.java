@@ -10,7 +10,6 @@ import lombok.Setter;
 public class DeleteUserRes {
     private String name;
     private String nickName;
-    private String phone;
     private String email;
     private String password;
 }

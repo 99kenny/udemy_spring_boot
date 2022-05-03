@@ -1,9 +1,7 @@
 package com.example.demo.src.user;
 
 
-import com.example.demo.src.user.model.GetUserRes;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostUserReq;
+import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -58,8 +56,8 @@ public class UserDao {
     }
 
     public int createUser(PostUserReq postUserReq){
-        String createUserQuery = "insert into User (name, nickName, phone, email, password) VALUES (?,?,?,?,?)";
-        Object[] createUserParams = new Object[]{postUserReq.getName(), postUserReq.getNickName(),postUserReq.getPhone(), postUserReq.getEmail(), postUserReq.getPassword()};
+        String createUserQuery = "insert into User (name, nickName, email, password) VALUES (?,?,?,?)";
+        Object[] createUserParams = new Object[]{postUserReq.getName(), postUserReq.getNickName(), postUserReq.getEmail(), postUserReq.getPassword()};
         this.jdbcTemplate.update(createUserQuery, createUserParams);
 
         String lastInserIdQuery = "select last_insert_id()";
@@ -82,6 +80,20 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
+    public int modifyUserStatus(DeleteUserReq deleteUserReq){
+        String getUsersByIdxQuery = "select name,nickName,email,password from User where userIdx=?";
+        int getUsersByIdxParams = deleteUserReq.getUserIdx();
+        DeleteUserRes deleteUserRes = this.jdbcTemplate.queryForObject(getUsersByIdxQuery,
+                (rs, rowNum) -> new DeleteUserRes(
+                        rs.getString("name"),
+                        rs.getString("nickName"),
+                        rs.getString("email"),
+                        rs.getString("password")),
+                getUsersByIdxParams);
+        String modifyStatusQuery = "update User set status = ? where userIdx = ? ";
+        Object[] modifyUserStatusParams = new Object[]{"INACTIVE", deleteUserReq.getUserIdx()};
+        return this.jdbcTemplate.update(modifyStatusQuery, modifyUserStatusParams);
+    }
 
 
 
