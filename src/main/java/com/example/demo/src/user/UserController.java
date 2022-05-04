@@ -138,7 +138,8 @@ public class UserController {
         try {
             DeleteUserReq deleteUserReq = new DeleteUserReq(userIdx);
             userService.modifyUserStatus(deleteUserReq);
-            return new BaseResponse<>("");
+
+            return new BaseResponse<>("계정이 탈퇴되었습니다.");
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

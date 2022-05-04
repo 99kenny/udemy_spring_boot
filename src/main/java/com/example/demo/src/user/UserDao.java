@@ -81,17 +81,10 @@ public class UserDao {
     }
 
     public int modifyUserStatus(DeleteUserReq deleteUserReq){
-        String getUsersByIdxQuery = "select name,nickName,email,password from User where userIdx=?";
         int getUsersByIdxParams = deleteUserReq.getUserIdx();
-        DeleteUserRes deleteUserRes = this.jdbcTemplate.queryForObject(getUsersByIdxQuery,
-                (rs, rowNum) -> new DeleteUserRes(
-                        rs.getString("name"),
-                        rs.getString("nickName"),
-                        rs.getString("email"),
-                        rs.getString("password")),
-                getUsersByIdxParams);
         String modifyStatusQuery = "update User set status = ? where userIdx = ? ";
         Object[] modifyUserStatusParams = new Object[]{"INACTIVE", deleteUserReq.getUserIdx()};
+
         return this.jdbcTemplate.update(modifyStatusQuery, modifyUserStatusParams);
     }
 
