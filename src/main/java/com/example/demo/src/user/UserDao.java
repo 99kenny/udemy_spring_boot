@@ -80,10 +80,9 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
-    public int modifyUserStatus(DeleteUserReq deleteUserReq){
-        int getUsersByIdxParams = deleteUserReq.getUserIdx();
+    public int modifyUserStatus(int userIdx){
         String modifyStatusQuery = "update User set status = ? where userIdx = ? ";
-        Object[] modifyUserStatusParams = new Object[]{"INACTIVE", deleteUserReq.getUserIdx()};
+        Object[] modifyUserStatusParams = new Object[]{"INACTIVE", userIdx};
 
         return this.jdbcTemplate.update(modifyStatusQuery, modifyUserStatusParams);
     }

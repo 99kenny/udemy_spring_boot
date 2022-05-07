@@ -136,9 +136,7 @@ public class UserController {
     @PatchMapping("/{userIdx}/status")
     public BaseResponse<String> deleteUser(@PathVariable int userIdx) {
         try {
-            DeleteUserReq deleteUserReq = new DeleteUserReq(userIdx);
-            userService.modifyUserStatus(deleteUserReq);
-
+            userService.modifyUserStatus(userIdx);
             return new BaseResponse<>("계정이 탈퇴되었습니다.");
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

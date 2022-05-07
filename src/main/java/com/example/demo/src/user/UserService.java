@@ -13,6 +13,7 @@ import jdk.internal.org.jline.utils.ExecHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -71,9 +72,9 @@ public class UserService {
         }
     }
 
-    public void modifyUserStatus(DeleteUserReq deleteUserReq) throws BaseException{
+    public void modifyUserStatus(int userIdx) throws BaseException{
         try{
-            int result = userDao.modifyUserStatus(deleteUserReq);
+            int result = userDao.modifyUserStatus(userIdx);
             if(result == 0){
                 throw new BaseException(MODIFY_FAIL_STATUS);
             }
