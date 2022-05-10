@@ -19,15 +19,53 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetUserRes> getUsers(){
-        String getUsersQuery = "select userIdx,name,nickName,email from User";
-        return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
+    //유저피드 조회
+    public GetUserInfoRes selectUserInfo(int userIdx){
+        String selectUsersInfoQuery = "select name, nickName, profileImgUrl, introduction, website,\n" +
+                "IF(postCount is null, 0, postCount) as postCount,\n" +
+                "IF(followerCount is null, 0, followerCount) as followerCount,\n" +
+                "IF(followeeCount is null, 0, followeeCount) as followeeCount\n" +
+            "FROM User\n" +
+                "left join (SELECT userIdx, COUNT(postIdx) as postCount\n" +
+            "FROM Post\n" +
+            "WHERE status = 'ACTIVE'" +
+        "group by userIdx) p on p.userIdx = User.userIdx\n" +
+        "left join (SELECT followerIdx, COUNT(followIdx) as followeeCount\n" +
+        "From Follow\n" +
+        "WHERE status = 'ACTIVE'\n" +
+        "group by followerIdx) q on q.followerIdx = User.userIdx\n" +
+        "left join (SELECT followeeIdx, COUNT(followIdx) as followerCount\n" +
+        "From Follow\n" +
+        "WHERE status = 'ACTIVE'\n" +
+        "group by followeeIdx) r on r.followeeIdx = User.userIdx\n" +
+        "where User.userIdx = ?;";
+        int selectUserInfoParam = userIdx;
+        return this.jdbcTemplate.queryForObject(selectUsersInfoQuery,
+                (rs,rowNum) -> new GetUserInfoRes(
                         rs.getString("name"),
                         rs.getString("nickName"),
-                        rs.getString("email")
-                ));
+                        rs.getString("profileImgUrl"),
+                        rs.getString("introduction"),
+                        rs.getString("website"),
+                        rs.getInt("postCount"),
+                        rs.getInt("followerCount"),
+                        rs.getInt("followeeCount")
+                        ), selectUserInfoParam);
+    }
+
+    public List<GetUserPostsRes> selectUserPosts(int userIdx){
+        String selectUserPostsQuery =
+                "SELECT p.postIdx as postIdx, pi.imgUrl as postImgUrl\n" +
+                "From Post as p\n" +
+                    "join User as u on u.userIdx = p.userIdx\n" +
+                    "join PostImgUrl as pi on pi.postIdx = p.postIdx and pi.status = 'ACTIVE'\n" +
+                "WHERE p.status = 'ACTIVE' and u.userIdx = ?;\n";
+        int selectUserPostsParam = userIdx;
+        return this.jdbcTemplate.query(selectUserPostsQuery,
+                (rs,rowNum) -> new GetUserPostsRes(
+                        rs.getInt("postIdx"),
+                        rs.getString("postImgUrl")
+                ), selectUserPostsParam);
     }
 
     public GetUserRes getUsersByEmail(String email){
@@ -70,6 +108,15 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
                 int.class,
                 checkEmailParams);
+
+    }
+
+    public int checkUserExist(int userIdx){
+        String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";
+        int checkUserExistParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserExistQuery,
+                int.class,
+                checkUserExistParams);
 
     }
 
