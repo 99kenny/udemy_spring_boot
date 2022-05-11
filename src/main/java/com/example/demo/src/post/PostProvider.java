@@ -42,7 +42,17 @@ public class PostProvider {
             return getPosts;
         }
         catch (Exception exception) {
+            System.out.println("exception = " + exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkUserExist(int userIdx) throws BaseException{
+        try{
+            return postDao.checkUserExist(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

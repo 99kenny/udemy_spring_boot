@@ -42,14 +42,14 @@ public class UserDao {
         int selectUserInfoParam = userIdx;
         return this.jdbcTemplate.queryForObject(selectUsersInfoQuery,
                 (rs,rowNum) -> new GetUserInfoRes(
-                        rs.getString("name"),
                         rs.getString("nickName"),
+                        rs.getString("name"),
                         rs.getString("profileImgUrl"),
-                        rs.getString("introduction"),
                         rs.getString("website"),
-                        rs.getInt("postCount"),
+                        rs.getString("introduction"),
                         rs.getInt("followerCount"),
-                        rs.getInt("followeeCount")
+                        rs.getInt("followeeCount"),
+                        rs.getInt("postCount")
                         ), selectUserInfoParam);
     }
 

@@ -34,8 +34,8 @@ public class PostController {
     }
 
     @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users
-    public BaseResponse<List<GetPostsRes>> getPosts(@PathVariable("userIdx")int userIdx) {
+    @GetMapping("") // (GET) 127.0.0.1:9000/users
+    public BaseResponse<List<GetPostsRes>> getPosts(@RequestParam int userIdx) {
         try{
             List<GetPostsRes> getPostsRes = postProvider.retrievePost(userIdx);
             return new BaseResponse<>(getPostsRes);
