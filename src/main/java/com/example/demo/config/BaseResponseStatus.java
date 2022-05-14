@@ -46,7 +46,7 @@ public enum BaseResponseStatus {
 
 
     MODIFY_FAIL_POST(false,3020,"게시물 수정을 실패했습니다."),
-    DELETE_FAIL_POST(false, 3021, "게시물 삭제를 실패했습니다"),
+    DELETE_FAIL_POST(false, 3021, "게시물 삭제를 실패했습니다"),g
 
 
 
